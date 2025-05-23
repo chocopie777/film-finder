@@ -3,9 +3,7 @@
 </script>
 
 <template>
-  <div>
-    favorites
-  </div>
+
 </template>
 
 <style scoped>
