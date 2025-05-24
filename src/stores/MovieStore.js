@@ -3,6 +3,7 @@ import {ref} from "vue";
 
 export const useMovieStore = defineStore('movie', () => {
   const movies = ref([])
+  const totalPages = ref(0)
 
   async function getMoviesBySearch(searchValue) {
     try {
@@ -10,10 +11,11 @@ export const useMovieStore = defineStore('movie', () => {
       const result = await data.json()
       console.log(result)
       movies.value = result.Search
+      totalPages.value = Math.ceil(result.totalResults / 10)
     } catch (e) {
       console.log(e)
     }
   }
 
-  return {movies,getMoviesBySearch}
+  return {movies,getMoviesBySearch, totalPages}
 })
