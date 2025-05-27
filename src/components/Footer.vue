@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <footer>
+  <footer class="bg-gray-900">
     <div class="mx-auto max-w-[1200px]">
       <div class="flex justify-center items-center h-30">
         <span class="text-white font-medium text-2xl">© 2025</span>

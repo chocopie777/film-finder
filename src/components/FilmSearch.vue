@@ -3,11 +3,15 @@ import {useMovieStore} from "@/stores/MovieStore.js";
 import {watch} from "vue";
 import debounce from "@/utils/debounce.js";
 import {useSearchStore} from "@/stores/SearchStore.js";
+import {usePaginationStore} from "@/stores/PaginationStore.js";
 
 const movieStore = useMovieStore()
 const searchStore = useSearchStore()
+const paginationStore = usePaginationStore()
 
 watch(() => searchStore.searchValue, debounce((newMovie) => {
+  //указать текущий номер страницы - 1 для каждого последующего нового поиска фильмов
+  paginationStore.currentPageNumber = 1
   if(newMovie.length > 2) {
     movieStore.isError = false
     movieStore.getMoviesBySearch(newMovie)

@@ -5,12 +5,14 @@ import {useMovieStore} from "@/stores/MovieStore.js";
 const movieStore = useMovieStore()
 const favorites = ref([])
 
+// при монтировании загрузить избранное из LocalStorage
 onMounted(() => {
   if(localStorage.getItem('favorites') && favorites.value.length === 0) {
     favorites.value = JSON.parse(localStorage.getItem('favorites')).favorites
   }
 })
 
+// Обработчик нажатия на кнопку избранное, для удаления из избранного
 function favoriteHandler(imdbID) {
   if(localStorage.getItem('favorites')) {
     favorites.value = JSON.parse(localStorage.getItem('favorites')).favorites
