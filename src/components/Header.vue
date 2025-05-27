@@ -15,7 +15,7 @@
           <nav>
             <ul class="flex text-gray-400 font-medium text-xl">
               <li class="mr-5"><RouterLink active-class="text-white" to="/">Home</RouterLink></li>
-              <li><RouterLink active-class="text-white" to="favorites">Favorites</RouterLink></li>
+              <li><RouterLink active-class="text-white" to="/favorites">Favorites</RouterLink></li>
             </ul>
           </nav>
         </div>
