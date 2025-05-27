@@ -1,23 +1,27 @@
 import {defineStore} from "pinia";
 import {ref} from "vue";
+import {usePaginationStore} from "@/stores/PaginationStore.js";
 
 export const useMovieStore = defineStore('movie', () => {
   const movies = ref([])
+  // общее количество страниц результата поиска
   const totalPages = ref(0)
-  const currentPageNumber = ref(1)
   const isLoading = ref(false)
   const errorMessage = ref('')
   const isError = ref(false)
+  // общее количество фильмов результата поиска
   const totalResults = ref(0)
+  const paginationStore = usePaginationStore()
 
+  // получить фильмы по значению поиска (первая страница)
   async function getMoviesBySearch(searchValue) {
     try {
       isLoading.value = true
-      currentPageNumber.value = 1
-      const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=${currentPageNumber.value}`)
+      const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=1`)
       const result = await data.json()
       console.log(result)
       if(result.Response === "False") {
+        totalResults.value = 0
         totalPages.value = 0
         movies.value = []
         errorMessage.value = result.Error
@@ -27,16 +31,18 @@ export const useMovieStore = defineStore('movie', () => {
         totalResults.value = result.totalResults
         movies.value = result.Search
         totalPages.value = Math.ceil(result.totalResults / 10)
+        // обновить пагинацию
+        paginationStore.pagination()
         isLoading.value = false
       }
     } catch (e) {
       console.log(e)
     }
   }
+  // получить фильмы по значению поиска и номеру страницы
   async function getMoviesByPage(pageNumber, searchValue) {
     try {
       isLoading.value = true
-      currentPageNumber.value = pageNumber
       const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=${pageNumber}`)
       const result = await data.json()
       movies.value = result.Search
@@ -58,5 +64,5 @@ export const useMovieStore = defineStore('movie', () => {
     }
   }
 
-  return {movies,getMoviesBySearch,totalPages,getMoviesByPage,currentPageNumber,isLoading,errorMessage,isError,totalResults,getMoviesByID}
+  return {movies,getMoviesBySearch,totalPages,getMoviesByPage,isLoading,errorMessage,isError,totalResults,getMoviesByID}
 })
