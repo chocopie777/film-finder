@@ -1,23 +1,27 @@
 <script setup>
 import {useMovieStore} from "@/stores/MovieStore.js";
-import {ref, watch} from "vue";
+import {watch} from "vue";
 import debounce from "@/utils/debounce.js";
 import {useSearchStore} from "@/stores/SearchStore.js";
 
 const movieStore = useMovieStore()
 const searchStore = useSearchStore()
-const isError = ref(false)
 
 watch(() => searchStore.searchValue, debounce((newMovie) => {
   if(newMovie.length > 2) {
-    isError.value = false
+    movieStore.isError = false
     movieStore.getMoviesBySearch(newMovie)
   } else if(newMovie.length === 0) {
-    isError.value = false
+    movieStore.isError = false
     movieStore.movies = []
+    movieStore.totalPages = 0
+    movieStore.totalResults = 0
   } else {
+    movieStore.errorMessage = 'Длина названия фильма должна быть не менее 3 символов'
+    movieStore.isError = true
     movieStore.movies = []
-    isError.value = true
+    movieStore.totalPages = 0
+    movieStore.totalResults = 0
   }
 }, 1000))
 </script>
@@ -30,11 +34,24 @@ watch(() => searchStore.searchValue, debounce((newMovie) => {
       <path class="stroke-gray-400" d="M4.33984 14.0743L1.37128 17" stroke="#67686D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </div>
-  <Transition>
-    <div class="bg-red-500 text-gray-800 text-lg font-medium rounded-xl p-2 pl-8 mt-2" v-if="isError">Длина названия фильма должна быть не менее 3 символов</div>
+  <Transition name="slide-horizontal">
+    <div class="bg-red-500 text-gray-800 text-lg font-medium rounded-xl p-2 pl-8 mt-2" v-if="movieStore.isError">{{movieStore.errorMessage}}</div>
   </Transition>
 </template>
 
 <style scoped>
-
+/* Горизонтальная slide-анимация */
+.slide-horizontal-enter-active {
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+.slide-horizontal-leave-active {
+  transition: all 0.3s ease-in;
+}
+.slide-horizontal-enter-from {
+  opacity: 0;
+  transform: translateX(-10%);
+}
+.slide-horizontal-leave-to {
+  opacity: 0;
+}
 </style>
