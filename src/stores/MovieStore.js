@@ -4,6 +4,7 @@ import {usePaginationStore} from "@/stores/PaginationStore.js";
 
 export const useMovieStore = defineStore('movie', () => {
   const movies = ref([])
+  const movie = ref({})
   // общее количество страниц результата поиска
   const totalPages = ref(0)
   const isLoading = ref(false)
@@ -19,7 +20,6 @@ export const useMovieStore = defineStore('movie', () => {
       isLoading.value = true
       const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=1`)
       const result = await data.json()
-      console.log(result)
       if(result.Response === "False") {
         totalResults.value = 0
         totalPages.value = 0
@@ -52,17 +52,19 @@ export const useMovieStore = defineStore('movie', () => {
       console.log(e)
     }
   }
+  // получить информацию о конкретном фильме по ID
   async function getMoviesByID(id) {
     try {
       isLoading.value = true
       const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&i=${id}&plot=full`)
       const result = await data.json()
-      console.log(result)
+      movie.value = result
       isLoading.value = false
+      return result
     } catch (e) {
       console.log(e)
     }
   }
 
-  return {movies,getMoviesBySearch,totalPages,getMoviesByPage,isLoading,errorMessage,isError,totalResults,getMoviesByID}
+  return {movies,getMoviesBySearch,totalPages,getMoviesByPage,isLoading,errorMessage,isError,totalResults,getMoviesByID,movie}
 })
