@@ -14,7 +14,7 @@ onMounted(() => {
 
 // Обработчик нажатия на кнопку избранное, для удаления из избранного
 function favoriteHandler(imdbID) {
-  if(localStorage.getItem('favorites')) {
+  try {
     favorites.value = JSON.parse(localStorage.getItem('favorites')).favorites
 
     const index = favorites.value.findIndex(obj => obj.imdbID === imdbID)
@@ -23,13 +23,8 @@ function favoriteHandler(imdbID) {
     }
 
     localStorage.setItem('favorites', JSON.stringify({favorites: favorites.value}))
-    movieStore.favoriteMovies = movieStore.favoriteMovies.filter(item => item.imdbID !== imdbID)
-
-    console.log('не пусто')
-  } else {
-    console.log('пусто')
-    favorites.value.unshift(imdbID)
-    localStorage.setItem('favorites', JSON.stringify({favorites: [imdbID]}))
+  } catch (e) {
+    console.log(e)
   }
 }
 </script>
@@ -48,7 +43,7 @@ function favoriteHandler(imdbID) {
             </svg>
           </button>
           <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-1 w-full top-0 left-0 h-[50%] bg-gradient-to-b from-black/90 to-black/0"></div>
-          <img class="w-full h-full absolute object-cover" :src="item.Poster" alt="poster">
+          <img class="w-full h-full absolute object-fill" :src="item.Poster" alt="poster">
         </RouterLink>
         <RouterLink v-else class="relative w-[calc(20%-2*10px)] m-[10px] h-80 bg-gray-500 rounded-4xl flex justify-center items-center p-5 overflow-hidden group" :to="`film/${item.imdbID}`">
           <button @click.stop.prevent="favoriteHandler(item.imdbID)" class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 top-5 right-5 cursor-pointer">
