@@ -4,9 +4,13 @@ import {useMovieStore} from "@/stores/MovieStore.js";
 import {useSearchStore} from "@/stores/SearchStore.js";
 import {onMounted, ref} from "vue";
 import {usePaginationStore} from "@/stores/PaginationStore.js";
+import Filter from "@/components/Filter.vue";
+import {useFilterStore} from "@/stores/FilterStore.js";
 const movieStore = useMovieStore()
 const searchStore = useSearchStore()
 const paginationStore = usePaginationStore()
+const filterStore = useFilterStore()
+
 const favorites = ref([])
 
 // при монтировании загрузить избранное из LocalStorage
@@ -43,7 +47,7 @@ function favoriteHandler(data) {
 
 // Обработчик нажатия на кнопку выбора страницы
 function pageHandler(pageNumber) {
-  movieStore.getMoviesByPage(pageNumber, searchStore.searchValue)
+  movieStore.getMoviesBySearchByPageByType(searchStore.searchValue, pageNumber, filterStore.filterValue)
   paginationStore.currentPageNumber = pageNumber
   // Обновить состояние пагинации
   paginationStore.pagination()
@@ -51,7 +55,7 @@ function pageHandler(pageNumber) {
 // Обработчик нажатия на кнопку следующей страницы
 function nextPage() {
   if(paginationStore.currentPageNumber !== movieStore.totalPages) {
-    movieStore.getMoviesByPage(paginationStore.currentPageNumber + 1, searchStore.searchValue)
+    movieStore.getMoviesBySearchByPageByType(searchStore.searchValue, paginationStore.currentPageNumber + 1, filterStore.filterValue)
     paginationStore.currentPageNumber++
     // Обновить состояние пагинации
     paginationStore.pagination()
@@ -60,7 +64,7 @@ function nextPage() {
 // Обработчик нажатия на кнопку предыдущей страницы
 function previousPage() {
   if(paginationStore.currentPageNumber > 1) {
-    movieStore.getMoviesByPage(paginationStore.currentPageNumber - 1, searchStore.searchValue)
+    movieStore.getMoviesBySearchByPageByType(searchStore.searchValue, paginationStore.currentPageNumber - 1, filterStore.filterValue)
     paginationStore.currentPageNumber--
     // Обновить состояние пагинации
     paginationStore.pagination()
@@ -68,13 +72,17 @@ function previousPage() {
 }
 </script>
 
+<!-- обработать ошибки 404 при загрузке изображений-->
 <template>
   <div class="flex flex-col h-full">
     <FilmSearch />
-    <div v-if="movieStore.totalResults > 0" class="text-white text-xl font-medium mt-5">
-      Найдено: ({{movieStore.totalResults}})
+    <div class="flex justify-between mt-5 items-end">
+      <div v-if="movieStore.totalResults > 0" class="text-white text-xl font-medium">
+        Найдено: ({{movieStore.totalResults}})
+      </div>
+      <Filter />
     </div>
-    <div v-if="!movieStore.isLoading" class="overflow-hidden grow">
+    <div v-if="!movieStore.isLoading" class="overflow-hidden grow z-0">
       <div class="flex flex-wrap mt-5 ml-[-10px] mr-[-10px]">
         <template v-for="item of movieStore.movies" :key="item.Title">
           <RouterLink v-if="item.Poster !== 'N/A'" class="relative w-[calc(20%-2*10px)] m-[10px] h-80 relative rounded-4xl overflow-hidden group" :to="`film/${item.imdbID}`">
