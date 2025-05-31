@@ -4,17 +4,20 @@ import {watch} from "vue";
 import debounce from "@/utils/debounce.js";
 import {useSearchStore} from "@/stores/SearchStore.js";
 import {usePaginationStore} from "@/stores/PaginationStore.js";
+import {useFilterStore} from "@/stores/FilterStore.js";
 
 const movieStore = useMovieStore()
 const searchStore = useSearchStore()
+const filterStore = useFilterStore()
 const paginationStore = usePaginationStore()
 
 watch(() => searchStore.searchValue, debounce((newMovie) => {
   //указать текущий номер страницы - 1 для каждого последующего нового поиска фильмов
   paginationStore.currentPageNumber = 1
+  filterStore.filterValue = 'all'
   if(newMovie.length > 2) {
     movieStore.isError = false
-    movieStore.getMoviesBySearch(newMovie)
+    movieStore.getMoviesBySearchByPageByType(newMovie, paginationStore.currentPageNumber, filterStore.filterValue)
   } else if(newMovie.length === 0) {
     movieStore.isError = false
     movieStore.movies = []

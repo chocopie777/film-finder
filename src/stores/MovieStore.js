@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {ref} from "vue";
 import {usePaginationStore} from "@/stores/PaginationStore.js";
+import {useFilterStore} from "@/stores/FilterStore.js";
 
 export const useMovieStore = defineStore('movie', () => {
   const movies = ref([])
@@ -13,12 +14,13 @@ export const useMovieStore = defineStore('movie', () => {
   // общее количество фильмов результата поиска
   const totalResults = ref(0)
   const paginationStore = usePaginationStore()
+  const filterStore = useFilterStore()
 
-  // получить фильмы по значению поиска (первая страница)
-  async function getMoviesBySearch(searchValue) {
+  // получить фильмы по значению поиска, номеру страницы и типу
+  async function getMoviesBySearchByPageByType(searchValue, pageNumber, type) {
     try {
       isLoading.value = true
-      const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=1`)
+      const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=${pageNumber}${type === 'all' ? '' : ('&type=' + type)}`)
       const result = await data.json()
       if(result.Response === "False") {
         totalResults.value = 0
@@ -27,6 +29,7 @@ export const useMovieStore = defineStore('movie', () => {
         errorMessage.value = result.Error
         isLoading.value = false
         isError.value = true
+        filterStore.filterValue = 'all'
       } else {
         totalResults.value = result.totalResults
         movies.value = result.Search
@@ -35,19 +38,6 @@ export const useMovieStore = defineStore('movie', () => {
         paginationStore.pagination()
         isLoading.value = false
       }
-    } catch (e) {
-      console.log(e)
-    }
-  }
-  // получить фильмы по значению поиска и номеру страницы
-  async function getMoviesByPage(pageNumber, searchValue) {
-    try {
-      isLoading.value = true
-      const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=${pageNumber}`)
-      const result = await data.json()
-      movies.value = result.Search
-      totalPages.value = Math.ceil(result.totalResults / 10)
-      isLoading.value = false
     } catch (e) {
       console.log(e)
     }
@@ -66,5 +56,5 @@ export const useMovieStore = defineStore('movie', () => {
     }
   }
 
-  return {movies,getMoviesBySearch,totalPages,getMoviesByPage,isLoading,errorMessage,isError,totalResults,getMoviesByID,movie}
+  return {movies,getMoviesBySearchByPageByType,totalPages,isLoading,errorMessage,isError,totalResults,getMoviesByID,movie}
 })
