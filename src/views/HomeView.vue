@@ -72,7 +72,6 @@ function previousPage() {
 }
 </script>
 
-<!-- обработать ошибки 404 при загрузке изображений-->
 <template>
   <div class="flex flex-col h-full">
     <FilmSearch />
