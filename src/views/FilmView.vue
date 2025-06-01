@@ -51,8 +51,8 @@ function favoriteHandler(data) {
 
 <template>
   <div v-if="!movieStore.isLoading">
-    <div class="flex text-white mb-5">
-      <div class="h-100 aspect-3/4 shrink-0 mr-5 rounded-xl overflow-hidden">
+    <div class="flex flex-col items-center md:items-start md:flex-row text-white mb-5">
+      <div class="h-100 aspect-3/4 shrink-0 md:mr-5 rounded-xl overflow-hidden">
         <template v-if="movieStore.movie.Poster !== 'N/A'">
           <img class="object-fill h-full w-full" :src="movieStore.movie.Poster">
         </template>
@@ -64,10 +64,10 @@ function favoriteHandler(data) {
           </div>
         </template>
       </div>
-      <div class="flex flex-col grow">
+      <div class="flex flex-col grow mt-5 md:mt-0">
         <div class="mb-2 relative">
           <span class="text-sm bg-yellow-400 rounded-4xl p-1 px-4 text-black font-bold">IMDB: {{movieStore.movie.imdbRating}}</span>
-          <button @click.stop.prevent="favoriteHandler(movieStore.movie)" class="absolute z-10 top-0 right-0 cursor-pointer">
+          <button @click.stop.prevent="favoriteHandler(movieStore.movie)" class="absolute z-10 -top-1 right-0 cursor-pointer">
             <svg class="w-8 h-12" v-if="favorites.some(obj => obj.imdbID === movieStore.movie.imdbID)" width="17" height="24" viewBox="0 0 17 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M13.2112 1L13.4681 1.0127C13.9782 1.06386 14.4622 1.26485 14.8587 1.58984L15.0491 1.7627C15.4757 2.1893 15.7394 2.74867 15.7991 3.34375L15.8118 3.60156V22.7998C15.8117 22.8528 15.7907 22.9039 15.7532 22.9414C15.7157 22.9789 15.6647 22.9999 15.6116 23L15.5599 22.9932L15.512 22.9736L8.91144 19.167L8.41241 18.8789L7.91241 19.167L1.31281 22.9727C1.28233 22.9902 1.2474 23 1.21222 23L1.16046 22.9932L1.11261 22.9727C1.0974 22.9639 1.08293 22.9537 1.07062 22.9414L1.03937 22.8994C1.02183 22.8691 1.0121 22.8349 1.01202 22.7998V3.60156C1.01268 2.99809 1.22262 2.4158 1.60187 1.95312L1.77472 1.7627C2.20132 1.33609 2.76068 1.07243 3.35577 1.0127L3.61359 1H13.2112Z" fill="#FFC700" stroke="#FFC700" stroke-width="2"/>
             </svg>
@@ -77,12 +77,12 @@ function favoriteHandler(data) {
           </button>
         </div>
         <span class="text-5xl font-bold">{{movieStore.movie.Title}}</span>
-        <div class="mt-5">
-          <span class="bg-gray-500 p-1 px-4 rounded-4xl mr-2">{{movieStore.movie.Rated}}</span>
-          <span class="bg-gray-500 p-1 px-4 rounded-4xl mr-2">{{movieStore.movie.Year}}</span>
-          <span class="bg-gray-500 p-1 px-4 rounded-4xl mr-2">{{movieStore.movie.Runtime}}</span>
-          <span class="bg-gray-500 p-1 px-4 rounded-4xl mr-2">{{movieStore.movie.Country}}</span>
-          <span class="bg-gray-500 p-1 px-4 rounded-4xl">{{movieStore.movie.Type}}</span>
+        <div class="mt-5 flex flex-wrap">
+          <span class="bg-gray-500 p-1 px-4 rounded-4xl mr-2 mb-1">{{movieStore.movie.Rated}}</span>
+          <span class="bg-gray-500 p-1 px-4 rounded-4xl mr-2 mb-1">{{movieStore.movie.Year}}</span>
+          <span class="bg-gray-500 p-1 px-4 rounded-4xl mr-2 mb-1">{{movieStore.movie.Runtime}}</span>
+          <span class="bg-gray-500 p-1 px-4 rounded-4xl mr-2 mb-1">{{movieStore.movie.Country}}</span>
+          <span class="bg-gray-500 p-1 px-4 rounded-4xl mb-1">{{movieStore.movie.Type}}</span>
         </div>
         <div class="w-full h-[0.2px] bg-gray-700 mt-5"></div>
         <div class="flex items-center mt-5 mb-5">
