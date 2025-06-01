@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {ref} from "vue";
 import {usePaginationStore} from "@/stores/PaginationStore.js";
 import {useFilterStore} from "@/stores/FilterStore.js";
+import {fixBrokenPosters} from "@/utils/fixBrokenPosters.js";
 
 export const useMovieStore = defineStore('movie', () => {
   const movies = ref([])
@@ -22,6 +23,8 @@ export const useMovieStore = defineStore('movie', () => {
       isLoading.value = true
       const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=${pageNumber}${type === 'all' ? '' : ('&type=' + type)}`)
       const result = await data.json()
+      // проверка изображений на 404
+      result.Search = await fixBrokenPosters(result.Search)
       if(result.Response === "False") {
         totalResults.value = 0
         totalPages.value = 0
@@ -29,6 +32,7 @@ export const useMovieStore = defineStore('movie', () => {
         errorMessage.value = result.Error
         isLoading.value = false
         isError.value = true
+        // если ошибка при поиске, то выставляем по умолчанию категорию 'all'
         filterStore.filterValue = 'all'
       } else {
         totalResults.value = result.totalResults
@@ -47,8 +51,9 @@ export const useMovieStore = defineStore('movie', () => {
     try {
       isLoading.value = true
       const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&i=${id}&plot=full`)
-      const result = await data.json()
-      movie.value = result
+      let result = await data.json()
+      result = await fixBrokenPosters([result])
+      movie.value = result[0]
       isLoading.value = false
       return result
     } catch (e) {
