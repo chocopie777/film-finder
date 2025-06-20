@@ -21,7 +21,7 @@ export const useMovieStore = defineStore('movie', () => {
   async function getMoviesBySearchByPageByType(searchValue, pageNumber, type) {
     try {
       isLoading.value = true
-      const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=${pageNumber}${type === 'all' ? '' : ('&type=' + type)}`)
+      const data = await fetch(`https://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&s=${searchValue}&page=${pageNumber}${type === 'all' ? '' : ('&type=' + type)}`)
       const result = await data.json()
       // проверка изображений на 404
       result.Search = await fixBrokenPosters(result.Search)
@@ -50,7 +50,7 @@ export const useMovieStore = defineStore('movie', () => {
   async function getMoviesByID(id) {
     try {
       isLoading.value = true
-      const data = await fetch(`http://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&i=${id}&plot=full`)
+      const data = await fetch(`https://www.omdbapi.com/?apikey=${import.meta.env.VITE_API_KEY}&i=${id}&plot=full`)
       let result = await data.json()
       result = await fixBrokenPosters([result])
       movie.value = result[0]
