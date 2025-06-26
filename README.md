@@ -1,35 +1,35 @@
-# film-finder
+# Film-Finder
+Проект представляет собой веб-приложение для поиска информации о фильмах и сериалах c использованием Vue 3 и Open Movie Database API.
 
-This template should help get you started developing with Vue 3 in Vite.
+[**_<ins>Ссылка на приложение</ins>_**](https://film-finder-weld.vercel.app/)
 
-## Recommended IDE Setup
+## 🚀 Демо 
+*Пример работы приложения* 
+![Демо проекта](demo.gif)  
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🛠 Технологии  
+- **Frontend**: Vue 3, Tailwind, Pinia, Vite, Vue Router
+- **Backend**: API https://www.omdbapi.com/
+- **Deploy**: Vercel  
 
-## Customize configuration
+## ⚡️ Функционал 
+✅ Поиск фильмов/сериалов по названию
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+✅ Просмотр детальной информации о фильме/сериале
 
-## Project Setup
+✅ Фильтрация результатов поиска по типу
 
-```sh
+✅ Пагинация
+
+✅ Сохранение избранных фильмов/сериалов в LocalStorage
+
+✅ Адаптивный интерфейс
+
+## 🚀 Установка  
+### Cоздать .env файл по примеру .env.example который есть в структуре проекта и внести туда api key из https://www.omdbapi.com/
+```bash
+git clone https://github.com/chocopie777/weather-app.git
+
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
